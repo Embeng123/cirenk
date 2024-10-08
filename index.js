@@ -65,9 +65,7 @@ async function getAllConfigVless(hostName) {
       const data = await response.json();
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://${generateUUIDv4()}@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.countryCode})`;
-      const vlessNtls = `vless://${generateUUIDv4()}@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.countryCode})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
-      const vlessNtlsFixed = vlessNtls.replace(/ /g, "+");
       const clashConfTls = `- name: ${data.isp} (${data.countryCode})
   server: ${hostName}
   port: 443
@@ -84,21 +82,6 @@ async function getAllConfigVless(hostName) {
     headers:
       Host: ${hostName}`;
       const clashConfNtls = `- name: ${data.isp} (${data.countryCode})
-  server: ${hostName}
-  port: 80
-  type: vless
-  uuid: ${generateUUIDv4()}
-  cipher: auto
-  tls: false
-  udp: true
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: ${path}
-    headers:
-      Host: ${hostName}`;
-      clashConfigs += `<div style="display: none;">
-   <textarea id="clashTls${path}">${clashConfTls}</textarea>
  </div>
 <div style="display: none;">
    <textarea id="clashNtls${path}">${clashConfNtls}</textarea>
@@ -116,10 +99,7 @@ async function getAllConfigVless(hostName) {
             </div>
             <hr />
             <div class="config-block">
-                <h3>NTLS:</h3>
-                <p class="config">${clashConfNtls}</p>
-                <button class="button" onclick='copyClash("clashNtls${path}")'><i class="fa fa-clipboard"></i>Copy</button>
-            </div>
+         </div>
         </div>
     </div>
 </div>
@@ -139,9 +119,7 @@ async function getAllConfigVless(hostName) {
             <hr />
             <div class="config-block">
                 <h3>NTLS:</h3>
-                <p class="config">${vlessNtlsFixed}</p>
-                <button class="button" onclick='copyToClipboard("${vlessNtlsFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
-            </div>
+           </div>
             <hr />
         </div>
     </div>
@@ -155,7 +133,7 @@ async function getAllConfigVless(hostName) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Vless | Noir7R | CLoudFlare</title>
+    <title>Vless | by:Embeng | CLoudFlare</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4C+6PCWJ+8zzHcXQjXGp6n5Yh9rX0x5fOdPaOqO+e2X4R5C1aE/BSqPIG+8y3O6APa8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="https://raw.githubusercontent.com/AFRcloud/BG/main/icons8-film-noir-80.png" type="image/png">
@@ -404,18 +382,7 @@ async function getAllConfigVless(hostName) {
         </div>
         <center><a href="Embeng" class="button">Source</a> <a href="https://t.me/freegazaok" class="button">Modded</a></center><br>
         <div class="config-section">
-        <strong>LIST WILLCARD : </strong><br>
-        <br>
-        \u2730 ava.game.naver.com<br>
-        \u2730 graph.instagram.com<br>
-        \u2730 quiz.int.vidio.com<br>
-        \u2730 live.iflix.com<br>
-        \u2730 support.zoom.us<br>
-        \u2730 blog.webex.com<br>
-        \u2730 cache.netflix.com<br>
-        \u2730 investors.spotify.com<br>
-        \u2730 zaintest.vuclip.com<br>
- \u2730 space.byu.id<br>
+        <strong>SUPPORT WILLCARD : </strong><br>
         </div>
         <hr class="config-divider" />
         <div id="vless" class="content active">
