@@ -1,6 +1,7 @@
 // worker.js
 import { connect } from "cloudflare:sockets";
 var listProxy = [
+  { path: "/7", proxy: "185.81.29.113" },
   { path: "/6", proxy: "45.60.186.91" },
   { path: "/5", proxy: "35.219.50.99" },
   { path: "/4", proxy: "154.17.23.94" },
@@ -249,11 +250,11 @@ async function getAllConfigVless(hostName) {
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
-            margin-top: 10px;
+            margin-bottom: 35px;
+            margin-top: 8px;
         }
         .header h1 {
-            font-size: 42px;
+            font-size: 40px;
             color: pink;
             margin: 0;
             font-weight: 700;
@@ -264,8 +265,8 @@ async function getAllConfigVless(hostName) {
         .nav-buttons {
             display: flex;
             justify-content: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 15px;
+            margin-bottom: 15px;
             gap: 10px;
         }
 
@@ -274,7 +275,7 @@ async function getAllConfigVless(hostName) {
             border: 3px solid pink;
             color: pink;
             padding: 6px 12px;
-            font-size: 20px;
+            font-size: 10px;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -301,11 +302,11 @@ async function getAllConfigVless(hostName) {
 
         .config-section {
             background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
+            padding: 15px;
             margin-right: 5px;
             margin-left: 5px;
             border: 2px solid pink;
-            border-radius: 10px;
+            border-radius: 8px;
             position: relative;
             animation: slideIn 0.5s ease-in-out;
         }
@@ -426,15 +427,15 @@ async function getAllConfigVless(hostName) {
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 32px;
+                font-size: 28px;
             }
 
             .config-section h3 {
-                font-size: 24px;
+                font-size: 20px;
             }
 
             .config-block h4 {
-                font-size: 20px;
+                font-size: 15px;
             }
 
             .domain-list {
@@ -448,7 +449,7 @@ async function getAllConfigVless(hostName) {
     <div class="container">
         <div class="header">
                     <div class="profile-container">
-				<img src="https://raw.githubusercontent.com/Embeng123/bbbb/refs/heads/main/Embee55_25-12-2023xzxb3o.png" alt="VLESS CLOUDFLARE" class="profile-pic">
+				<img src="https://raw.githubusercontent.com/Embeng123/bbbb/refs/heads/main/Embee55_25-12-2023xzxb3o.png" alt="IsraeL Anjinggg" class="profile-pic">
             <h2>FREE VPN VLESS 🇮🇩🇵🇸</h2>
         </div>
         <div class="config-section">
@@ -456,7 +457,7 @@ async function getAllConfigVless(hostName) {
             <button class="button" onclick="showContent('vless')">List vless</button>
             <button class="button" onclick="showContent('clash')">List Clash</button>
         </div>
-        <center><a href="https://t.me/freegazaok" class="button">Source</a></center><br>
+        <center><a href="https://t.me/freegazaok" class="button">Source</a> <a href="https://cdn.videy.co/DEdh6EAq1.mp4" class="button">Video</a></center><br>
         </div><hr class="config-divider" />
         <div class="config-section">
         
