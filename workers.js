@@ -102,10 +102,10 @@ async function getAllConfigVless(hostName) {
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://${generateUUIDv4()}@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessXCL = `vless://${generateUUIDv4()}@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# IG ${data.isp}(${data.country_code})`;
-     // const vlessNtls = `vless://${generateUUIDv4()}@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
+      const vlessNtls = `vless://${generateUUIDv4()}@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
-     // const vlessNtlsFixed = vlessNtls.replace(/ /g, "+");
+      const vlessNtlsFixed = vlessNtls.replace(/ /g, "+");
       const clashConfTls = `- name: ${data.isp} (${data.country_code})
   server: ${hostName}
   port: 443
