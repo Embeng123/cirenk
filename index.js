@@ -102,7 +102,7 @@ async function getAllConfigVless(hostName) {
       const data = await response.json();
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://${generateUUIDv4()}@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
-      const vlessXCL = `vless://${generateUUIDv4()}@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# IG ${data.isp}(${data.country_code})`;
+      const vlessXCL = `vless://${generateUUIDv4()}@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
       const vlessNtls = `vless://${generateUUIDv4()}@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
@@ -213,7 +213,7 @@ async function getAllConfigVless(hostName) {
             padding: 0;
             font-family: 'Poppins', sans-serif;
             color: #77DD77;
-              background: url('https://cdn0-production-images-kly.akamaized.net/l1phDofXqRXC-fwvtMVZB6ZTnCA=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1815414/original/000559300_1514515449-20171229-Gunung-Sinabung-AFP1.jpg') no-repeat center center fixed;
+              background: url('https://images.hdqwalls.com/download/simple-blue-gradients-abstract-8k-nh-1440x2960.jpg') no-repeat center center fixed;
             background-size: cover;
             display: flex;
             align-items: center;
@@ -257,6 +257,7 @@ async function getAllConfigVless(hostName) {
             margin-bottom: 35px;
             margin-top: 8px;
         }
+        
         .header h1 {
             font-size: 40px;
             color: pink;
@@ -467,8 +468,9 @@ async function getAllConfigVless(hostName) {
         
         <strong>Note: </strong><br>
         <br>
-        \u2730 dns1: embeng.us.kg<br>
-        \u2730 dns2: gcore.embeng.us.kg<br>
+        \u2730 dns workers cf: embeng.us.kg<br>
+        \u2730 dns pages cf: embeng.ggff.net<br>
+        \u2730 dns gcore: gcore.embeng.us.kg<br>
         \u2730 Utk wilcard request dulu ya!<br>
         </div>
         <hr class="config-divider" />
