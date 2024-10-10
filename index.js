@@ -213,24 +213,28 @@ async function getAllConfigVless(hostName) {
             padding: 0;
             font-family: 'Poppins', sans-serif;
             color: #77DD77;
-            background-color: black;
+              background: url('https://cdn0-production-images-kly.akamaized.net/l1phDofXqRXC-fwvtMVZB6ZTnCA=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1815414/original/000559300_1514515449-20171229-Gunung-Sinabung-AFP1.jpg') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             align-items: center;
             flex-direction: column;
             min-height: 100vh;
-            overflow: hidden;
+            overflow: scroll;
         }
 
-        .container {
+         .container {
             max-width: 1200px;
-            width: 100%;
-            margin: 3px;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            width: 80%;
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
             animation: fadeIn 1s ease-in-out;
             overflow-y: auto;
-            max-height: 100vh;
+            max-height: 80vh;
         }
 
         .overlay {
