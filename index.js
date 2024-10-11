@@ -281,7 +281,7 @@ async function getAllConfigVless(hostName) {
             color: pink;
             padding: 6px 12px;
             font-size: 10px;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
@@ -362,20 +362,19 @@ async function getAllConfigVless(hostName) {
         .config-block h4 {
             margin-bottom: 8px;
             color: #f39c12;
-            font-size: 22px;
-            font-weight: 600;
+            font-size: 5px;
+            font-weight: 300;
         }
 
         .config {
             background-color: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 5px;
-            border: 2px solid pink;
+            padding: 0,5px;
+            border-radius: 0,5px;
+            border: 1px solid pink;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 15px;
         }
         .button {
             background-color: transparent;
@@ -411,15 +410,15 @@ async function getAllConfigVless(hostName) {
             margin: 20px 0;
         }
         .watermark {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            font-weight: bold;
-            text-align: center;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px solid pink;
+            color: #f5f5f5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
         }
         .watermark a {
             color: #ffa500;
@@ -430,9 +429,9 @@ async function getAllConfigVless(hostName) {
             color: #ffa500;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 500px) {
             .header h1 {
-                font-size: 28px;
+                font-size: 20px;
             }
 
             .config-section h3 {
@@ -440,11 +439,11 @@ async function getAllConfigVless(hostName) {
             }
 
             .config-block h4 {
-                font-size: 15px;
+                font-size: 10px;
             }
 
             .domain-list {
-                font-size: 10px;
+                font-size: 0,5px;
             }
         }
     </style>
@@ -462,12 +461,11 @@ async function getAllConfigVless(hostName) {
             <button class="button" onclick="showContent('vless')">List vless</button>
             <button class="button" onclick="showContent('clash')">List Clash</button>
         </div>
-        <center><a href="https://t.me/freegazaok" class="button">Source</a> <a href="https://cdn.videy.co/DEdh6EAq1.mp4" class="button">Video</a></center><br>
+        <center><a href="https://excalidraw.com" class="button">Coret²</a> <a href="https://cdn.videy.co/DEdh6EAq1.mp4" class="button">Video</a></center><br>
         </div><hr class="config-divider" />
         <div class="config-section">
         
         <strong>Note: </strong><br>
-        <br>
         \u2730 dns workers cf: embeng.us.kg<br>
         \u2730 dns pages cf: embeng.ggff.net<br>
         \u2730 dns gcore: gcore.embeng.us.kg<br>
@@ -480,6 +478,7 @@ async function getAllConfigVless(hostName) {
         <div id="clash" class="content">
             ${clashConfigs}
         </div>
+           <div class="watermark">📞 <a href="https://t.me/sampiiiiu" target="_blank">Embeng</a></div>
     </div>
     <script>
         function showContent(contentId) {
