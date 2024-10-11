@@ -213,7 +213,7 @@ async function getAllConfigVless(hostName) {
             padding: 0;
             font-family: 'Poppins', sans-serif;
             color: #77DD77;
-              background: url('https://images.hdqwalls.com/download/simple-blue-gradients-abstract-8k-nh-1440x2960.jpg') no-repeat center center fixed;
+              background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeh0uilmNQc-cO2KU6LK3ktYLOCqGRfD9sdkS9GNl7umj_iR3txQHfJKyW&s=10') no-repeat center center fixed;
             background-size: cover;
             display: flex;
             align-items: center;
@@ -222,7 +222,7 @@ async function getAllConfigVless(hostName) {
             overflow: scroll;
         }
 
-         .container {
+        // .container {
             max-width: 1200px;
             width: 80%;
             margin-top: 50px;
@@ -235,7 +235,7 @@ async function getAllConfigVless(hostName) {
             animation: fadeIn 1s ease-in-out;
             overflow-y: auto;
             max-height: 80vh;
-        }
+        }//
 
         .overlay {
             position: fixed;
@@ -318,7 +318,7 @@ async function getAllConfigVless(hostName) {
         .profile-pic {
     width: 300px;
     height: 300px;
-    border-radius: 50%;
+    border-radius: 5%;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
     margin: 0;
 		}
