@@ -103,10 +103,10 @@ async function getAllConfigVless(hostName) {
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://${generateUUIDv4()}@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessXCL = `vless://${generateUUIDv4()}@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
-      const vlessNtls = `vless://${generateUUIDv4()}@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
+    //  const vlessNtls = `vless://${generateUUIDv4()}@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
-      const vlessNtlsFixed = vlessNtls.replace(/ /g, "+");
+    //  const vlessNtlsFixed = vlessNtls.replace(/ /g, "+");
       const clashConfTls = `- name: ${data.isp} (${data.country_code})
   server: ${hostName}
   port: 443
@@ -213,7 +213,7 @@ async function getAllConfigVless(hostName) {
             padding: 0;
             font-family: 'Poppins', sans-serif;
             color: #77DD77;
-              background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeh0uilmNQc-cO2KU6LK3ktYLOCqGRfD9sdkS9GNl7umj_iR3txQHfJKyW&s=10') no-repeat center center fixed;
+              background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyTA8Rtvm8l4HOPnlS4Zyjs4vuaCAhYnhH1w&usqp=CAU') no-repeat center center fixed;
             background-size: cover;
             display: flex;
             align-items: center;
@@ -222,20 +222,18 @@ async function getAllConfigVless(hostName) {
             overflow: scroll;
         }
 
-        // .container {
+        .container {
             max-width: 1200px;
             width: 80%;
             margin-top: 50px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 15px;
+           
+         white-space: nowrap;
             padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
+           
             animation: fadeIn 1s ease-in-out;
             overflow-y: auto;
             max-height: 80vh;
-        }//
+        }
 
         .overlay {
             position: fixed;
@@ -369,7 +367,7 @@ async function getAllConfigVless(hostName) {
         .config {
             background-color: rgba(0, 0, 0, 0.2);
             padding: 0,5px;
-            border-radius: 0,5px;
+            border-radius: 2px;
             border: 1px solid pink;
             color: #f5f5f5;
             word-wrap: break-word;
@@ -439,7 +437,7 @@ async function getAllConfigVless(hostName) {
             }
 
             .config-block h4 {
-                font-size: 10px;
+                font-size: 20px;
             }
 
             .domain-list {
