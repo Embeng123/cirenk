@@ -8,7 +8,9 @@ var listProxy = [
   { path: "/3", proxy: "34.82.76.253" },
   { path: "/2", proxy: "34.34.217.201" },
   { path: "/1", proxy: "172.232.238.169" },
-
+  { path: "/8", proxy: "101.50.0.114" },
+  { path: "/9", proxy: "172.232.252.101" },
+  { path: "/10", proxy: "172.93.186.154" },
   //tambahin sendiri
 ];
 var apiCheck = "https://ipwho.is/json/?ip=";
@@ -101,9 +103,9 @@ async function getAllConfigVless(hostName) {
       const response = await fetch(`https://ipwhois.app/json/${proxy}`);
       const data = await response.json();
       const pathFixed = encodeURIComponent(path);
-      const vlessTls = `vless://${generateUUIDv4()}@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
-      const vlessXCL = `vless://${generateUUIDv4()}@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
-      const vlessNtls = `vless://${generateUUIDv4()}@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
+      const vlessTls = `vless://Israel=Babi@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
+      const vlessXCL = `vless://Israel=Babi@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
+      const vlessNtls = `vless://Israel=Babi@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
       const vlessNtlsFixed = vlessNtls.replace(/ /g, "+");
@@ -111,7 +113,7 @@ async function getAllConfigVless(hostName) {
   server: ${hostName}
   port: 443
   type: vless
-  uuid: ${generateUUIDv4()}
+  uuid: Israel=Babi
   cipher: auto
   tls: true
   udp: true
@@ -126,7 +128,7 @@ async function getAllConfigVless(hostName) {
   server: ${hostName}
   port: 80
   type: vless
-  uuid: ${generateUUIDv4()}
+  uuid: Israel=Babi
   cipher: auto
   tls: false
   udp: true
@@ -211,7 +213,7 @@ async function getAllConfigVless(hostName) {
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Courier New', Georgia;
             color: #77DD77;
               background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyTA8Rtvm8l4HOPnlS4Zyjs4vuaCAhYnhH1w&usqp=CAU') no-repeat center center fixed;
             background-size: cover;
@@ -226,8 +228,7 @@ async function getAllConfigVless(hostName) {
             max-width: 1200px;
             width: 80%;
             margin-top: 50px;
-           
-         white-space: nowrap;
+            white-space: normal;
             padding: 30px;
            
             animation: fadeIn 1s ease-in-out;
@@ -329,12 +330,12 @@ async function getAllConfigVless(hostName) {
         .config-section h3 {
             margin-top: 0;
             color: #e1b12c;
-            font-size: 28px;
+            font-size: 20px;
         }
 
         .config-section p {
             color: #f5f5f5;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .config-toggle {
@@ -467,7 +468,7 @@ async function getAllConfigVless(hostName) {
         \u2730 dns workers cf: embeng.us.kg<br>
         \u2730 dns pages cf: embeng.ggff.net<br>
         \u2730 dns gcore: gcore.embeng.us.kg<br>
-        \u2730 Utk wilcard request dulu ya!<br>
+        \u2730 Utk wilcard bisa request!<br>
         </div>
         <hr class="config-divider" />
         <div id="vless" class="content active">
@@ -476,7 +477,7 @@ async function getAllConfigVless(hostName) {
         <div id="clash" class="content">
             ${clashConfigs}
         </div>
-           <div class="watermark">📞 <a href="https://t.me/sampiiiiu" target="_blank">Embeng</a></div>
+           <div class="watermark">📞 <a href="https://t.me/freegazaok" target="_blank">Embeng</a></div>
     </div>
     <script>
         function showContent(contentId) {
@@ -611,29 +612,7 @@ function fetchAndDisplayAlert(path) {
     return `An error occurred while generating the VLESS configurations. ${error}`;
   }
 }
-function generateUUIDv4() {
-  const randomValues = crypto.getRandomValues(new Uint8Array(16));
-  randomValues[6] = randomValues[6] & 15 | 64;
-  randomValues[8] = randomValues[8] & 63 | 128;
-  return [
-    randomValues[0].toString(16).padStart(2, "0"),
-    randomValues[1].toString(16).padStart(2, "0"),
-    randomValues[2].toString(16).padStart(2, "0"),
-    randomValues[3].toString(16).padStart(2, "0"),
-    randomValues[4].toString(16).padStart(2, "0"),
-    randomValues[5].toString(16).padStart(2, "0"),
-    randomValues[6].toString(16).padStart(2, "0"),
-    randomValues[7].toString(16).padStart(2, "0"),
-    randomValues[8].toString(16).padStart(2, "0"),
-    randomValues[9].toString(16).padStart(2, "0"),
-    randomValues[10].toString(16).padStart(2, "0"),
-    randomValues[11].toString(16).padStart(2, "0"),
-    randomValues[12].toString(16).padStart(2, "0"),
-    randomValues[13].toString(16).padStart(2, "0"),
-    randomValues[14].toString(16).padStart(2, "0"),
-    randomValues[15].toString(16).padStart(2, "0")
-  ].join("").replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, "$1-$2-$3-$4-$5");
-}
+
 async function vlessOverWSHandler(request) {
   const webSocketPair = new WebSocketPair();
   const [client, webSocket] = Object.values(webSocketPair);
