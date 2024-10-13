@@ -111,7 +111,8 @@ async function getAllConfigVless(hostName) {
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://Israel=Babi@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessXCL = `vless://Israel=Babi@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
-      const vlessGcore = `vless://Israel=Babi@gcore.embeng.us.kg:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=gcore.embeng.us.kg&path=${pathFixed}#${data.isp} (${data.country_code})`;
+      const vlessGcore = `vless://Israel=Babi@gcore.embeng.us.kg:443?encryption=none&security=tls&sni=gcore.embeng.u
+s.kg&fp=randomized&type=ws&host=gcore.embeng.us.kg&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
       const vlessGcoreFixed = vlessGcore.replace(/ /g, "+");
@@ -149,7 +150,7 @@ async function getAllConfigVless(hostName) {
    <textarea id="clashTls${path}">${clashConfTls}</textarea>
  </div>
 <div style="display: none;">
-   <textarea id="clashNtls${path}">${clashConfGcore}</textarea>
+   <textarea id="clashGcore${path}">${clashConfGcore}</textarea>
  </div>
 <div class="config-section">
     <p><strong>ISP:${data.isp} (${data.country_code})</strong> </p>
@@ -165,9 +166,9 @@ async function getAllConfigVless(hostName) {
             </div>
             <hr />
             <div class="config-block">
-                <h3>NTLS:</h3>
+                <h3>Gcore:</h3>
                 <p class="config">${clashConfGcore}</p>
-                <button class="button" onclick='copyClash("clashNtls${path}")'><i class="fa fa-clipboard"></i>Copy</button>
+                <button class="button" onclick='copyClash("clashGcore${path}")'><i class="fa fa-clipboard"></i>Copy</button>
             </div>
         </div>
     </div>
