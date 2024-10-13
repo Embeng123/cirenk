@@ -1,8 +1,8 @@
 // worker.js
 import { connect } from "cloudflare:sockets";
 var listProxy = [
-  { "path": "/1", "proxy": "203.194.112.119" },
-  { "path": "/2", "proxy": "91.192.81.154" },
+  { "path": "/1", "proxy": "45.60.186.91" },
+  { "path": "/2", "proxy": "45.79.168.17" },
   { "path": "/3", "proxy": "129.150.50.63" },
   { "path": "/4", "proxy": "111.119.221.74" },
   { "path": "/5", "proxy": "35.219.50.99" },
