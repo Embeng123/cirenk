@@ -111,8 +111,7 @@ async function getAllConfigVless(hostName) {
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://Israel=Babi@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessXCL = `vless://Israel=Babi@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
-      const vlessGcore = `vless://Israel=Babi@gcore.embeng.us.kg:443?encryption=none&security=tls&sni=gcore.embeng.u
-s.kg&fp=randomized&type=ws&host=gcore.embeng.us.kg&path=${pathFixed}#${data.isp} (${data.country_code})`;
+      const vlessGcore = `vless://Israel=Babi@gcore.embeng.us.kg:443?encryption=none&security=tls&sni=gcore.embeng.us.kg&fp=randomized&type=ws&host=gcore.embeng.us.kg&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
       const vlessGcoreFixed = vlessGcore.replace(/ /g, "+");
@@ -189,7 +188,7 @@ s.kg&fp=randomized&type=ws&host=gcore.embeng.us.kg&path=${pathFixed}#${data.isp}
             </div>
             <hr />
             <div class="config-block">
-                <h3>NTLS:</h3>
+                <h3>GCORE:</h3>
                 <p class="config">${vlessGcoreFixed}</p>
                 <button class="button" onclick='copyToClipboard("${vlessGcoreFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
             </div>
