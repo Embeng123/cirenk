@@ -1,17 +1,37 @@
 // worker.js
 import { connect } from "cloudflare:sockets";
 var listProxy = [
-  { path: "/7", proxy: "185.81.29.113" },
-  { path: "/6", proxy: "45.60.186.91" },
-  { path: "/5", proxy: "35.219.50.99" },
-  { path: "/4", proxy: "154.17.23.94" },
-  { path: "/3", proxy: "34.82.76.253" },
-  { path: "/2", proxy: "34.34.217.201" },
-  { path: "/1", proxy: "172.232.238.169" },
-  { path: "/8", proxy: "101.50.0.114" },
-  { path: "/9", proxy: "172.232.252.101" },
-  { path: "/10", proxy: "172.93.186.154" },
-  //tambahin sendiri
+  { "path": "/1", "proxy": "172.232.252.101:587" },
+  { "path": "/2", "proxy": "8.215.23.33:587" },
+  { "path": "/3", "proxy": "129.150.50.63:443" },
+  { "path": "/4", "proxy": "203.194.112.119" },
+  { "path": "/5", "proxy": "35.219.50.99" },
+  { "path": "/6", "proxy": "172.232.238.169" },
+  { "path": "/7", "proxy": "172.232.234.119:587" },
+  { "path": "/8", "proxy": "103.180.193.56:443" },
+  { "path": "/9", "proxy": "101.50.0.114:2053" },
+  { "path": "/10", "proxy": "101.50.0.114:8443" },
+  { "path": "/11", "proxy": "103.133.223.51:2096" },
+  { "path": "/12", "proxy": "104.248.145.216:443" },
+  { "path": "/13", "proxy": "103.133.223.52:2096" },
+  { "path": "/14", "proxy": "103.232.213.211:27043" },
+  { "path": "/15", "proxy": "103.133.223.50:2096" },
+  { "path": "/16", "proxy": "104.40.244.228:443" },
+  { "path": "/17", "proxy": "109.120.135.150:443" },
+  { "path": "/18", "proxy": "104.215.16.121:443" },
+  { "path": "/19", "proxy": "109.120.134.15:443" },
+  { "path": "/20", "proxy": "109.120.132.218:443" },
+  { "path": "/21", "proxy": "103.99.178.62:51794" },
+  { "path": "/22", "proxy": "103.99.179.39:443" },
+  { "path": "/23", "proxy": "109.120.134.133:443" },
+  { "path": "/24", "proxy": "109.120.132.147:443" },
+  { "path": "/25", "proxy": "109.120.133.242:443" },
+  { "path": "/26", "proxy": "109.120.133.8:443" },
+  { "path": "/27", "proxy": "103.99.178.62:13241" },
+  { "path": "/28", "proxy": "109.120.132.136:443" },
+  { "path": "/29", "proxy": "103.99.178.62:31940" },
+  { "path": "/30", "proxy": "104.210.3.231:8443" }
+  // Tambah proxy lain sesuai kebutuhan
 ];
 var apiCheck = "https://ipwho.is/json/?ip=";
 var proxyIP;
@@ -465,9 +485,8 @@ async function getAllConfigVless(hostName) {
         <div class="config-section">
         
         <strong>Note: </strong><br>
-        \u2730 dns workers cf: embeng.us.kg<br>
-        \u2730 dns pages cf: embeng.ggff.net<br>
-        \u2730 dns gcore: gcore.embeng.us.kg<br>
+        \u2730 workers cf: embeng.us.kg<br>
+        \u2730 pages cf: embeng.ggff.net<br>
         \u2730 Utk wilcard bisa request!<br>
         </div>
         <hr class="config-divider" />
