@@ -11,7 +11,6 @@ var listProxy = [
   { "path": "/8", "proxy": "104.248.145.216" },
   { "path": "/9", "proxy": "111.119.221.74" },
   { "path": "/10", "proxy": "146.190.111.165" },
-  { "path": "/11", "proxy": "1.1.1.1" },
   // Tambah proxy lain sesuai kebutuhan
 ];
 var apiCheck = "https://ipwho.is/json/?ip=";
@@ -249,7 +248,7 @@ async function getAllConfigVless(hostName) {
         .profile-pic {
     width: 300px;
     height: 300px;
-    box-shadow: 0 0 15px rgba(255, 255, 0, 1);
+    box-shadow: 0 0 15px rgba(255, 255, 204, 1);
     margin: 0;
 		}
 
@@ -266,7 +265,7 @@ async function getAllConfigVless(hostName) {
 
         .header h1 {
             font-size: 42px;
-            color: yellow;
+            color: cream;
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
@@ -283,8 +282,8 @@ async function getAllConfigVless(hostName) {
 
         .nav-buttons .button {
             background-color: transparent;
-            border: 3px solid yellow;
-            color: yellow;
+            border: 3px solid cream;
+            color: cream;
             padding: 6px 12px;
             font-size: 20px;
             border-radius: 4px;
@@ -295,7 +294,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .nav-buttons .button:hover {
-            background-color: yellow;
+            background-color: cream;
             color: #fff;
             transform: scale(1.05);
         }
@@ -316,7 +315,7 @@ async function getAllConfigVless(hostName) {
             padding: 20px;
             margin-right: 5px;
             margin-left: 5px;
-            border: 2px solid yellow;
+            border: 2px solid cream;
             border-radius: 10px;
             position: relative;
             animation: slideIn 0.5s ease-in-out;
@@ -369,7 +368,7 @@ async function getAllConfigVless(hostName) {
             background-color: rgba(0, 0, 0, 0.2);
             padding: 15px;
             border-radius: 5px;
-            border: 2px solid yellow;
+            border: 2px solid cream;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -378,7 +377,7 @@ async function getAllConfigVless(hostName) {
         }
         .button {
             background-color: transparent;
-            border: 2px solid yellow;
+            border: 2px solid cream;
             color: yellow;
             padding: 4px 8px;
             font-size: 12px;
@@ -398,7 +397,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .button:hover {
-            background-color: yellow;
+            background-color: cream;
             color: #fff;
             transform: scale(1.0);
         }
@@ -415,7 +414,7 @@ async function getAllConfigVless(hostName) {
             margin-right: 5px;
             margin-left: 5px;
             border-radius: 5px;
-            border: 2px solid yellow;
+            border: 2px solid cream;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
