@@ -226,7 +226,7 @@ async function getAllConfigVless(hostName) {
 
         .container {
             max-width: 1200px;
-            width: 97%;
+            width: 90%;
             margin: 3px;
             background: rgba(237 ,232, 208, 1);
             backdrop-filter: blur(8px);
@@ -240,8 +240,8 @@ async function getAllConfigVless(hostName) {
             position: fixed;
             top: 0;
             left: 0;
-            width: 97%;
-            height: 97%;
+            width: 90%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.9);
             z-index: -1;
         }
@@ -311,7 +311,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .config-section {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(200, 173, 127, 1);
             padding: 20px;
             margin-right: 5px;
             margin-left: 5px;
@@ -409,11 +409,11 @@ async function getAllConfigVless(hostName) {
             margin: 20px 0;
         }
         .watermark {
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(200, 173, 127, 1);
             padding: 17px;
             margin-right: 5px;
             margin-left: 5px;
-            border-radius: 5px;
+            border-radius: 10px;
             border: 2px solid #EDE8D0;
             color: #f5f5f5;
             word-wrap: break-word;
@@ -422,12 +422,12 @@ async function getAllConfigVless(hostName) {
             font-size: 15px;
         }
         .watermark a {
-            color: #ffa500;
+            color: #EDE8D0;
             text-decoration: none;
             font-weight: bold;
         }
         .watermark a:hover {
-            color: #ffa500;
+            color: #EDE8D0;
         }
 
         @media (max-width: 768px) {
