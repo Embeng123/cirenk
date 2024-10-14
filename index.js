@@ -226,29 +226,29 @@ async function getAllConfigVless(hostName) {
 
         .container {
             max-width: 1200px;
-            width: 100%;
+            width: 97%;
             margin: 3px;
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             animation: fadeIn 1s ease-in-out;
             overflow-y: auto;
-            max-height: 100vh;
+            max-height: 97vh;
         }
 
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 97%;
+            height: 97%;
             background: rgba(15, 15, 15, 0.4);
             z-index: -1;
         }
         .profile-pic {
     width: 300px;
     height: 300px;
-    box-shadow: 0 0 15px rgba(255, 255, 204, 1);
+    box-shadow: 0 0 15px rgba(237,232,208, 1);
     margin: 0;
 		}
 
@@ -265,7 +265,7 @@ async function getAllConfigVless(hostName) {
 
         .header h1 {
             font-size: 42px;
-            color: cream;
+            color: #EDE8D0;
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
@@ -283,7 +283,7 @@ async function getAllConfigVless(hostName) {
         .nav-buttons .button {
             background-color: transparent;
             border: 3px solid cream;
-            color: cream;
+            color: #EDE8D0;
             padding: 6px 12px;
             font-size: 20px;
             border-radius: 4px;
@@ -294,7 +294,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .nav-buttons .button:hover {
-            background-color: cream;
+            background-color: #EDE8D0;
             color: #fff;
             transform: scale(1.05);
         }
@@ -315,7 +315,7 @@ async function getAllConfigVless(hostName) {
             padding: 20px;
             margin-right: 5px;
             margin-left: 5px;
-            border: 2px solid cream;
+            border: 2px solid #EDE8D0;
             border-radius: 10px;
             position: relative;
             animation: slideIn 0.5s ease-in-out;
@@ -377,8 +377,8 @@ async function getAllConfigVless(hostName) {
         }
         .button {
             background-color: transparent;
-            border: 2px solid cream;
-            color: yellow;
+            border: 2px solid #EDE8D0;
+            color: green;
             padding: 4px 8px;
             font-size: 12px;
             border-radius: 3px;
@@ -397,7 +397,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .button:hover {
-            background-color: cream;
+            background-color: #EDE8D0;
             color: #fff;
             transform: scale(1.0);
         }
@@ -414,7 +414,7 @@ async function getAllConfigVless(hostName) {
             margin-right: 5px;
             margin-left: 5px;
             border-radius: 5px;
-            border: 2px solid cream;
+            border: 2px solid #EDE8D0;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
