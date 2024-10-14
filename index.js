@@ -11,6 +11,7 @@ var listProxy = [
   { "path": "/8", "proxy": "104.248.145.216" },
   { "path": "/9", "proxy": "111.119.221.74" },
   { "path": "/10", "proxy": "146.190.111.165" },
+  { "path": "/11", "proxy": "1.1.1.1" },
   // Tambah proxy lain sesuai kebutuhan
 ];
 var apiCheck = "https://ipwho.is/json/?ip=";
@@ -105,10 +106,10 @@ async function getAllConfigVless(hostName) {
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://Israel=Babi@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessXCL = `vless://Israel=Babi@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
-      const vlessGcore = `vless://Israel=Babi@gcore.embeng.us.kg:443?encryption=none&security=tls&sni=gcore.embeng.us.kg&fp=randomized&type=ws&host=gcore.embeng.us.kg&path=${pathFixed}#${data.isp} (${data.country_code})`;
+      const vlessByu = `vless://Israel=Babi@space.byu.id:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
-      const vlessGcoreFixed = vlessGcore.replace(/ /g, "+");
+      const vlessByuFixed = vlessByu.replace(/ /g, "+");
       const clashConfTls = `- name: ${data.isp} (${data.country_code})
   server: ${hostName}
   port: 443
@@ -124,8 +125,8 @@ async function getAllConfigVless(hostName) {
     path: ${path}
     headers:
       Host: ${hostName}`;
-      const clashConfGcore = `- name: ${data.isp} (${data.country_code})
-  server: gcore.embeng.us.kg
+      const clashConfByu = `- name: ${data.isp} (${data.country_code})
+  server: space.byu.id
   port: 443
   type: vless
   uuid: Israel=Babi
@@ -134,16 +135,16 @@ async function getAllConfigVless(hostName) {
   udp: true
   skip-cert-verify: true
   network: ws
-  servername: gcore.embeng.us.kg
+  servername: ${hostName}
   ws-opts:
     path: ${path}
     headers:
-      Host: gcore.embeng.us.kg`;
+      Host: ${hostName}`;
       clashConfigs += `<div style="display: none;">
    <textarea id="clashTls${path}">${clashConfTls}</textarea>
  </div>
 <div style="display: none;">
-   <textarea id="clashGcore${path}">${clashConfGcore}</textarea>
+   <textarea id="clashByu${path}">${clashConfByu}</textarea>
  </div>
 <div class="config-section">
     <p><strong>ISP:${data.isp} (${data.country_code})</strong> </p>
@@ -159,9 +160,9 @@ async function getAllConfigVless(hostName) {
             </div>
             <hr />
             <div class="config-block">
-                <h3>Gcore:</h3>
-                <p class="config">${clashConfGcore}</p>
-                <button class="button" onclick='copyClash("clashGcore${path}")'><i class="fa fa-clipboard"></i>Copy</button>
+                <h3>Byu:</h3>
+                <p class="config">${clashConfByu}</p>
+                <button class="button" onclick='copyClash("clashByu${path}")'><i class="fa fa-clipboard"></i>Copy</button>
             </div>
         </div>
     </div>
@@ -182,9 +183,9 @@ async function getAllConfigVless(hostName) {
             </div>
             <hr />
             <div class="config-block">
-                <h3>GCORE:</h3>
-                <p class="config">${vlessGcoreFixed}</p>
-                <button class="button" onclick='copyToClipboard("${vlessGcoreFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
+                <h3>BYU:</h3>
+                <p class="config">${vlessByuFixed}</p>
+                <button class="button" onclick='copyToClipboard("${vlessByuFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
             </div>
             <hr />
             <div class="config-block">
@@ -204,7 +205,7 @@ async function getAllConfigVless(hostName) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Free VPN Vless</title>
+    <title>VPN | by-Embeng</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4C+6PCWJ+8zzHcXQjXGp6n5Yh9rX0x5fOdPaOqO+e2X4R5C1aE/BSqPIG+8y3O6APa8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="https://raw.githubusercontent.com/AFRcloud/BG/main/icons8-film-noir-80.png" type="image/png">
@@ -214,27 +215,26 @@ async function getAllConfigVless(hostName) {
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Georgia;
-            color: #77DD77;
-              background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyTA8Rtvm8l4HOPnlS4Zyjs4vuaCAhYnhH1w&usqp=CAU') no-repeat center center fixed;
-            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            color: #f5f5f5;
+            background-color: black;
             display: flex;
             align-items: center;
             flex-direction: column;
             min-height: 100vh;
-            overflow: scroll;
+            overflow: hidden;
         }
 
         .container {
             max-width: 1200px;
-            width: 80%;
-            margin-top: 50px;
-            white-space: normal;
-            padding: 30px;
-           
+            width: 100%;
+            margin: 3px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             animation: fadeIn 1s ease-in-out;
             overflow-y: auto;
-            max-height: 80vh;
+            max-height: 100vh;
         }
 
         .overlay {
@@ -246,6 +246,12 @@ async function getAllConfigVless(hostName) {
             background: rgba(15, 15, 15, 0.4);
             z-index: -1;
         }
+        .profile-pic {
+    width: 300px;
+    height: 300px;
+    box-shadow: 0 0 15px rgba(255, 255, 0, 1);
+    margin: 0;
+		}
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -254,13 +260,13 @@ async function getAllConfigVless(hostName) {
 
         .header {
             text-align: center;
-            margin-bottom: 35px;
-            margin-top: 8px;
+            margin-bottom: 40px;
+            margin-top: 10px;
         }
-        
+
         .header h1 {
-            font-size: 40px;
-            color: pink;
+            font-size: 42px;
+            color: yellow;
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
@@ -270,18 +276,18 @@ async function getAllConfigVless(hostName) {
         .nav-buttons {
             display: flex;
             justify-content: center;
-            margin-top: 15px;
-            margin-bottom: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
             gap: 10px;
         }
 
         .nav-buttons .button {
             background-color: transparent;
-            border: 3px solid pink;
-            color: pink;
+            border: 3px solid yellow;
+            color: yellow;
             padding: 6px 12px;
-            font-size: 10px;
-            border-radius: 8px;
+            font-size: 20px;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
@@ -289,7 +295,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .nav-buttons .button:hover {
-            background-color: pink;
+            background-color: yellow;
             color: #fff;
             transform: scale(1.05);
         }
@@ -307,21 +313,14 @@ async function getAllConfigVless(hostName) {
 
         .config-section {
             background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
+            padding: 20px;
             margin-right: 5px;
             margin-left: 5px;
-            border: 2px solid pink;
-            border-radius: 8px;
+            border: 2px solid yellow;
+            border-radius: 10px;
             position: relative;
             animation: slideIn 0.5s ease-in-out;
         }
-        .profile-pic {
-    width: 300px;
-    height: 300px;
-    border-radius: 5%;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    margin: 0;
-		}
 
         @keyframes slideIn {
             from { transform: translateX(-30px); opacity: 0; }
@@ -331,12 +330,12 @@ async function getAllConfigVless(hostName) {
         .config-section h3 {
             margin-top: 0;
             color: #e1b12c;
-            font-size: 20px;
+            font-size: 28px;
         }
 
         .config-section p {
             color: #f5f5f5;
-            font-size: 15px;
+            font-size: 16px;
         }
 
         .config-toggle {
@@ -362,24 +361,25 @@ async function getAllConfigVless(hostName) {
         .config-block h4 {
             margin-bottom: 8px;
             color: #f39c12;
-            font-size: 5px;
-            font-weight: 300;
+            font-size: 22px;
+            font-weight: 600;
         }
 
         .config {
             background-color: rgba(0, 0, 0, 0.2);
-            padding: 0,5px;
-            border-radius: 2px;
-            border: 1px solid pink;
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px solid yellow;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
             font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
         }
         .button {
             background-color: transparent;
-            border: 2px solid pink;
-            color: pink;
+            border: 2px solid yellow;
+            color: yellow;
             padding: 4px 8px;
             font-size: 12px;
             border-radius: 3px;
@@ -398,7 +398,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .button:hover {
-            background-color: pink;
+            background-color: yellow;
             color: #fff;
             transform: scale(1.0);
         }
@@ -411,9 +411,11 @@ async function getAllConfigVless(hostName) {
         }
         .watermark {
             background-color: rgba(0, 0, 0, 0.2);
-            padding: 15px;
+            padding: 17px;
+            margin-right: 5px;
+            margin-left: 5px;
             border-radius: 5px;
-            border: 2px solid pink;
+            border: 2px solid yellow;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -429,13 +431,13 @@ async function getAllConfigVless(hostName) {
             color: #ffa500;
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 768px) {
             .header h1 {
-                font-size: 20px;
+                font-size: 32px;
             }
 
             .config-section h3 {
-                font-size: 20px;
+                font-size: 24px;
             }
 
             .config-block h4 {
@@ -443,7 +445,7 @@ async function getAllConfigVless(hostName) {
             }
 
             .domain-list {
-                font-size: 0,5px;
+                font-size: 10px;
             }
         }
     </style>
