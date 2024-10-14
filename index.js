@@ -282,7 +282,7 @@ async function getAllConfigVless(hostName) {
 
         .nav-buttons .button {
             background-color: transparent;
-            border: 3px solid cream;
+            border: 3px solid #EDE8D0;
             color: #EDE8D0;
             padding: 6px 12px;
             font-size: 20px;
@@ -328,7 +328,7 @@ async function getAllConfigVless(hostName) {
 
         .config-section h3 {
             margin-top: 0;
-            color: #e1b12c;
+            color: #355E3B;
             font-size: 28px;
         }
 
@@ -359,7 +359,7 @@ async function getAllConfigVless(hostName) {
 
         .config-block h4 {
             margin-bottom: 8px;
-            color: #f39c12;
+            color: #355E3B;
             font-size: 22px;
             font-weight: 600;
         }
@@ -368,7 +368,7 @@ async function getAllConfigVless(hostName) {
             background-color: rgba(0, 0, 0, 0.9);
             padding: 15px;
             border-radius: 5px;
-            border: 2px solid cream;
+            border: 2px solid #EDE8D0;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -378,7 +378,7 @@ async function getAllConfigVless(hostName) {
         .button {
             background-color: transparent;
             border: 2px solid #EDE8D0;
-            color: green;
+            color: #EDE8D0;
             padding: 4px 8px;
             font-size: 12px;
             border-radius: 3px;
@@ -501,7 +501,7 @@ async function getAllConfigVless(hostName) {
             alertBox.style.position = 'fixed';
             alertBox.style.bottom = '20px';
             alertBox.style.right = '20px';
-            alertBox.style.backgroundColor = 'pink';
+            alertBox.style.backgroundColor = '#EDE8D0';
             alertBox.style.color = '#fff';
             alertBox.style.padding = '10px 20px';
             alertBox.style.borderRadius = '5px';
@@ -538,7 +538,7 @@ function fetchAndDisplayAlert(path) {
             alertBox.style.position = 'fixed';
             alertBox.style.bottom = '20px';
             alertBox.style.right = '20px';
-            alertBox.style.backgroundColor = 'pink';
+            alertBox.style.backgroundColor = '#EDE8D0';
             alertBox.style.color = '#fff';
             alertBox.style.padding = '10px 20px';
             alertBox.style.borderRadius = '5px';
@@ -570,7 +570,7 @@ function fetchAndDisplayAlert(path) {
                     alertBox.style.position = 'fixed';
                     alertBox.style.bottom = '20px';
                     alertBox.style.right = '20px';
-                    alertBox.style.backgroundColor = 'pink';
+                    alertBox.style.backgroundColor = '#EDE8D0';
                     alertBox.style.color = '#fff';
                     alertBox.style.padding = '10px 20px';
                     alertBox.style.borderRadius = '5px';
