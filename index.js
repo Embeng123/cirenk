@@ -352,8 +352,12 @@ async function getAllConfigVless(hostName) {
         .config-block {
             margin-bottom: 10px;
             padding: 15px;
+            background-color: rgba(200, 173, 127, 1);
+            margin-right: 5px;
+            margin-left: 5px;
             border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.9);
+            border: 2px solid #EDE8D0;
+            color: #f5f5f5;
             transition: background-color 0.3s ease;
         }
 
@@ -365,11 +369,11 @@ async function getAllConfigVless(hostName) {
         }
 
         .config {
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(200, 173, 127, 1);
             padding: 15px;
             border-radius: 5px;
             border: 2px solid #EDE8D0;
-            color: #f5f5f5;
+            color: #2d3035;
             word-wrap: break-word;
             white-space: pre-wrap;
             font-family: 'Courier New', Courier, monospace;
