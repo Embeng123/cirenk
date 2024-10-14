@@ -215,7 +215,7 @@ async function getAllConfigVless(hostName) {
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
-            color: #f5f5f5;
+            color: #355E3B;
             background-color: black;
             display: flex;
             align-items: center;
@@ -228,7 +228,7 @@ async function getAllConfigVless(hostName) {
             max-width: 1200px;
             width: 97%;
             margin: 3px;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(237 ,232, 208, 1);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             animation: fadeIn 1s ease-in-out;
@@ -242,13 +242,13 @@ async function getAllConfigVless(hostName) {
             left: 0;
             width: 97%;
             height: 97%;
-            background: rgba(15, 15, 15, 0.4);
+            background: rgba(0, 0, 0, 0.9);
             z-index: -1;
         }
         .profile-pic {
     width: 300px;
     height: 300px;
-    box-shadow: 0 0 15px rgba(237,232,208, 1);
+    box-shadow: 0 0 15px rgba(58, 95, 65, 1);
     margin: 0;
 		}
 
@@ -311,7 +311,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .config-section {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             padding: 20px;
             margin-right: 5px;
             margin-left: 5px;
@@ -353,7 +353,7 @@ async function getAllConfigVless(hostName) {
             margin-bottom: 10px;
             padding: 15px;
             border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.9);
             transition: background-color 0.3s ease;
         }
 
@@ -365,7 +365,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .config {
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.9);
             padding: 15px;
             border-radius: 5px;
             border: 2px solid cream;
@@ -409,7 +409,7 @@ async function getAllConfigVless(hostName) {
             margin: 20px 0;
         }
         .watermark {
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 17px;
             margin-right: 5px;
             margin-left: 5px;
