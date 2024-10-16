@@ -1,17 +1,17 @@
 // worker.js
 import { connect } from "cloudflare:sockets";
 var listProxy = [
-  { path: "/7", proxy: "185.81.29.113" },
-  { path: "/6", proxy: "45.60.186.91" },
-  { path: "/5", proxy: "35.219.50.99" },
-  { path: "/4", proxy: "138.2.94.123" },
-  { path: "/3", proxy: "34.82.76.253" },
-  { path: "/2", proxy: "34.34.217.201" },
-  { path: "/1", proxy: "172.232.238.169" },
-  { path: "/8", proxy: "101.50.0.114" },
-  { path: "/9", proxy: "172.232.252.101" },
-  { path: "/10", proxy: "172.93.186.154" },
-  //tambahin sendiri
+  { "path": "/1", "proxy": "45.60.186.91" },
+  { "path": "/2", "proxy": "45.79.168.17" },
+  { "path": "/3", "proxy": "129.150.50.63" },
+  { "path": "/4", "proxy": "18.142.183.94" },
+  { "path": "/5", "proxy": "35.219.50.99" },
+  { "path": "/6", "proxy": "172.232.238.169" },
+  { "path": "/7", "proxy": "103.180.193.56" },
+  { "path": "/8", "proxy": "104.248.145.216" },
+  { "path": "/9", "proxy": "47.236.195.221" },
+  { "path": "/10", "proxy": "146.190.111.165" },
+  // Tambah proxy lain sesuai kebutuhan
 ];
 var apiCheck = "https://ipwho.is/json/?ip=";
 var proxyIP;
@@ -105,10 +105,10 @@ async function getAllConfigVless(hostName) {
       const pathFixed = encodeURIComponent(path);
       const vlessTls = `vless://Israel-Babi@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessXCL = `vless://Israel-Babi@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
-      const vlessNtls = `vless://Israel=Babi@${hostName}:80?path=${pathFixed}&security=none&encryption=none&host=${hostName}&fp=randomized&type=ws&sni=${hostName}#${data.isp} (${data.country_code})`;
+      const vlessByu = `vless://Israel-Babi@space.byu.id:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
       const vlessTlsFixed = vlessTls.replace(/ /g, "+");
       const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
-      const vlessNtlsFixed = vlessNtls.replace(/ /g, "+");
+      const vlessByuFixed = vlessByu.replace(/ /g, "+");
       const clashConfTls = `- name: ${data.isp} (${data.country_code})
   server: ${hostName}
   port: 443
@@ -124,16 +124,17 @@ async function getAllConfigVless(hostName) {
     path: ${path}
     headers:
       Host: ${hostName}`;
-      const clashConfNtls = `- name: ${data.isp} (${data.country_code})
-  server: ${hostName}
-  port: 80
+      const clashConfByu = `- name: ${data.isp} (${data.country_code})
+  server: space.byu.id
+  port: 443
   type: vless
   uuid: Israel-Babi
   cipher: auto
-  tls: false
+  tls: true
   udp: true
   skip-cert-verify: true
   network: ws
+  servername: ${hostName}
   ws-opts:
     path: ${path}
     headers:
@@ -142,7 +143,7 @@ async function getAllConfigVless(hostName) {
    <textarea id="clashTls${path}">${clashConfTls}</textarea>
  </div>
 <div style="display: none;">
-   <textarea id="clashNtls${path}">${clashConfNtls}</textarea>
+   <textarea id="clashByu${path}">${clashConfByu}</textarea>
  </div>
 <div class="config-section">
     <p><strong>ISP:${data.isp} (${data.country_code})</strong> </p>
@@ -158,9 +159,9 @@ async function getAllConfigVless(hostName) {
             </div>
             <hr />
             <div class="config-block">
-                <h3>NTLS:</h3>
-                <p class="config">${clashConfNtls}</p>
-                <button class="button" onclick='copyClash("clashNtls${path}")'><i class="fa fa-clipboard"></i>Copy</button>
+                <h3>Byu:</h3>
+                <p class="config">${clashConfByu}</p>
+                <button class="button" onclick='copyClash("clashByu${path}")'><i class="fa fa-clipboard"></i>Copy</button>
             </div>
         </div>
     </div>
@@ -181,9 +182,9 @@ async function getAllConfigVless(hostName) {
             </div>
             <hr />
             <div class="config-block">
-                <h3>NTLS:</h3>
-                <p class="config">${vlessNtlsFixed}</p>
-                <button class="button" onclick='copyToClipboard("${vlessNtlsFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
+                <h3>BYU:</h3>
+                <p class="config">${vlessByuFixed}</p>
+                <button class="button" onclick='copyToClipboard("${vlessByuFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
             </div>
             <hr />
             <div class="config-block">
@@ -203,7 +204,7 @@ async function getAllConfigVless(hostName) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Free VPN Vless</title>
+    <title>VPN | by-Embeng</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4C+6PCWJ+8zzHcXQjXGp6n5Yh9rX0x5fOdPaOqO+e2X4R5C1aE/BSqPIG+8y3O6APa8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="https://raw.githubusercontent.com/AFRcloud/BG/main/icons8-film-noir-80.png" type="image/png">
@@ -213,38 +214,43 @@ async function getAllConfigVless(hostName) {
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Georgia;
-            color: #77DD77;
-              background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyTA8Rtvm8l4HOPnlS4Zyjs4vuaCAhYnhH1w&usqp=CAU') no-repeat center center fixed;
-            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            color: #355E3B;
+            background-color: black;
             display: flex;
             align-items: center;
             flex-direction: column;
             min-height: 100vh;
-            overflow: scroll;
+            overflow: hidden;
         }
 
         .container {
             max-width: 1200px;
-            width: 80%;
-            margin-top: 50px;
-            white-space: normal;
-            padding: 30px;
-           
+            width: 90%;
+            margin: 3px;
+            background: rgba(237 ,232, 208, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             animation: fadeIn 1s ease-in-out;
             overflow-y: auto;
-            max-height: 80vh;
+            max-height: 97vh;
         }
 
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 90%;
             height: 100%;
-            background: rgba(15, 15, 15, 0.4);
+            background: rgba(0, 0, 0, 0.9);
             z-index: -1;
         }
+        .profile-pic {
+    width: 300px;
+    height: 300px;
+    box-shadow: 0 0 15px rgba(58, 95, 65, 1);
+    margin: 0;
+		}
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -253,13 +259,13 @@ async function getAllConfigVless(hostName) {
 
         .header {
             text-align: center;
-            margin-bottom: 35px;
-            margin-top: 8px;
+            margin-bottom: 40px;
+            margin-top: 10px;
         }
-        
+
         .header h1 {
-            font-size: 40px;
-            color: pink;
+            font-size: 42px;
+            color: #EDE8D0;
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
@@ -269,18 +275,18 @@ async function getAllConfigVless(hostName) {
         .nav-buttons {
             display: flex;
             justify-content: center;
-            margin-top: 15px;
-            margin-bottom: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
             gap: 10px;
         }
 
         .nav-buttons .button {
             background-color: transparent;
-            border: 3px solid pink;
-            color: pink;
+            border: 3px solid #EDE8D0;
+            color: #EDE8D0;
             padding: 6px 12px;
-            font-size: 10px;
-            border-radius: 8px;
+            font-size: 20px;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
@@ -288,7 +294,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .nav-buttons .button:hover {
-            background-color: pink;
+            background-color: #EDE8D0;
             color: #fff;
             transform: scale(1.05);
         }
@@ -305,22 +311,15 @@ async function getAllConfigVless(hostName) {
         }
 
         .config-section {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
+            background: rgba(200, 173, 127, 1);
+            padding: 20px;
             margin-right: 5px;
             margin-left: 5px;
-            border: 2px solid pink;
-            border-radius: 8px;
+            border: 2px solid #EDE8D0;
+            border-radius: 10px;
             position: relative;
             animation: slideIn 0.5s ease-in-out;
         }
-        .profile-pic {
-    width: 300px;
-    height: 300px;
-    border-radius: 5%;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    margin: 0;
-		}
 
         @keyframes slideIn {
             from { transform: translateX(-30px); opacity: 0; }
@@ -329,13 +328,13 @@ async function getAllConfigVless(hostName) {
 
         .config-section h3 {
             margin-top: 0;
-            color: #e1b12c;
-            font-size: 20px;
+            color: #355E3B;
+            font-size: 28px;
         }
 
         .config-section p {
             color: #f5f5f5;
-            font-size: 15px;
+            font-size: 16px;
         }
 
         .config-toggle {
@@ -353,32 +352,37 @@ async function getAllConfigVless(hostName) {
         .config-block {
             margin-bottom: 10px;
             padding: 15px;
+            background-color: rgba(200, 173, 127, 1);
+            margin-right: 5px;
+            margin-left: 5px;
             border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.2);
+            border: 2px solid #EDE8D0;
+            color: #f5f5f5;
             transition: background-color 0.3s ease;
         }
 
         .config-block h4 {
             margin-bottom: 8px;
-            color: #f39c12;
-            font-size: 5px;
-            font-weight: 300;
+            color: #355E3B;
+            font-size: 22px;
+            font-weight: 600;
         }
 
         .config {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 0,5px;
-            border-radius: 2px;
-            border: 1px solid pink;
-            color: #f5f5f5;
+            background-color: rgba(200, 173, 127, 1);
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px solid #EDE8D0;
+            color: #2d3035;
             word-wrap: break-word;
             white-space: pre-wrap;
             font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
         }
         .button {
             background-color: transparent;
-            border: 2px solid pink;
-            color: pink;
+            border: 2px solid #EDE8D0;
+            color: #EDE8D0;
             padding: 4px 8px;
             font-size: 12px;
             border-radius: 3px;
@@ -397,7 +401,7 @@ async function getAllConfigVless(hostName) {
         }
 
         .button:hover {
-            background-color: pink;
+            background-color: #EDE8D0;
             color: #fff;
             transform: scale(1.0);
         }
@@ -409,10 +413,12 @@ async function getAllConfigVless(hostName) {
             margin: 20px 0;
         }
         .watermark {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 5px;
-            border: 2px solid pink;
+            background-color: rgba(200, 173, 127, 1);
+            padding: 17px;
+            margin-right: 5px;
+            margin-left: 5px;
+            border-radius: 10px;
+            border: 2px solid #EDE8D0;
             color: #f5f5f5;
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -420,21 +426,21 @@ async function getAllConfigVless(hostName) {
             font-size: 15px;
         }
         .watermark a {
-            color: #ffa500;
+            color: #EDE8D0;
             text-decoration: none;
             font-weight: bold;
         }
         .watermark a:hover {
-            color: #ffa500;
+            color: #EDE8D0;
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 768px) {
             .header h1 {
-                font-size: 20px;
+                font-size: 32px;
             }
 
             .config-section h3 {
-                font-size: 20px;
+                font-size: 24px;
             }
 
             .config-block h4 {
@@ -442,7 +448,7 @@ async function getAllConfigVless(hostName) {
             }
 
             .domain-list {
-                font-size: 0,5px;
+                font-size: 10px;
             }
         }
     </style>
@@ -465,9 +471,6 @@ async function getAllConfigVless(hostName) {
         <div class="config-section">
         
         <strong>Note: </strong><br>
-        \u2730 dns workers cf: embeng.us.kg<br>
-        \u2730 dns pages cf: embeng.ggff.net<br>
-        \u2730 dns gcore: gcore.embeng.us.kg<br>
         \u2730 Utk wilcard bisa request!<br>
         </div>
         <hr class="config-divider" />
@@ -502,7 +505,7 @@ async function getAllConfigVless(hostName) {
             alertBox.style.position = 'fixed';
             alertBox.style.bottom = '20px';
             alertBox.style.right = '20px';
-            alertBox.style.backgroundColor = 'pink';
+            alertBox.style.backgroundColor = '#EDE8D0';
             alertBox.style.color = '#fff';
             alertBox.style.padding = '10px 20px';
             alertBox.style.borderRadius = '5px';
@@ -539,7 +542,7 @@ function fetchAndDisplayAlert(path) {
             alertBox.style.position = 'fixed';
             alertBox.style.bottom = '20px';
             alertBox.style.right = '20px';
-            alertBox.style.backgroundColor = 'pink';
+            alertBox.style.backgroundColor = '#EDE8D0';
             alertBox.style.color = '#fff';
             alertBox.style.padding = '10px 20px';
             alertBox.style.borderRadius = '5px';
@@ -571,7 +574,7 @@ function fetchAndDisplayAlert(path) {
                     alertBox.style.position = 'fixed';
                     alertBox.style.bottom = '20px';
                     alertBox.style.right = '20px';
-                    alertBox.style.backgroundColor = 'pink';
+                    alertBox.style.backgroundColor = '#EDE8D0';
                     alertBox.style.color = '#fff';
                     alertBox.style.padding = '10px 20px';
                     alertBox.style.borderRadius = '5px';
