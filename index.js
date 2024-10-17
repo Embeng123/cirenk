@@ -1,15 +1,15 @@
 const listProxy = [
-    { path: '/vless=101.50.0.114=8443', proxy: '101.50.0.114:8443' },
-    { path: '/vless=172.232.252.101=587', proxy: '172.232.252.101:587' },
-    { path: '/vless=8.215.23.33=587', proxy: '35.219.50.99:587' },
-    { path: '/vless=129.150.50.63=443', proxy: '129.150.50.63:443' },
-    { path: '/vless=103.133.223.52=2096', proxy: '103.133.223.52:2096' },
-    { path: '/vless=165.154.48.233=587', proxy: '165.154.48.233:587' },
-    { path: '/vless=35.219.15.90=443', proxy: '35.219.15.90:443' },
-    { path: '/vless=43.218.79.114=2053', proxy: '43.218.79.114:2053' },
-    { path: '/vless=203.194.112.119=2053', proxy: '203.194.112.119:2053' },
-    { path: '/vless=47.236.7.98=587', proxy: '47.236.7.98:587' },
-    { path: '/vless=157.230.33.184=80', proxy: '157.230.33.184:80' },
+    { path: '/vless=101.50.0.114:8443', proxy: '101.50.0.114:8443' },
+    { path: '/vless=172.232.252.101:587', proxy: '172.232.252.101:587' },
+    { path: '/vless=8.215.23.33:587', proxy: '35.219.50.99:587' },
+    { path: '/vless=129.150.50.63:443', proxy: '129.150.50.63:443' },
+    { path: '/vless=103.133.223.52:2096', proxy: '103.133.223.52:2096' },
+    { path: '/vless=165.154.48.233:587', proxy: '165.154.48.233:587' },
+    { path: '/vless=35.219.15.90:443', proxy: '35.219.15.90:443' },
+    { path: '/vless=43.218.79.114:2053', proxy: '43.218.79.114:2053' },
+    { path: '/vless=203.194.112.119:2053', proxy: '203.194.112.119:2053' },
+    { path: '/vless=47.236.7.98:587', proxy: '47.236.7.98:587' },
+    { path: '/vless=157.230.33.184:80', proxy: '157.230.33.184:80' },
     // Add more entries as needed
 ];
 
@@ -232,4 +232,4 @@ async function getVLESSConfig(path, hostName, proxyIP) {
 }// Placeholder function for WebSocket handling
 async function vlessOverWSHandler(request) {
     return new Response("WebSocket handling not implemented.", { status: 501 });
-		}
+						 }
