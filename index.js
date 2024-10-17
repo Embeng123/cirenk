@@ -1,978 +1,235 @@
-// worker.js
-import { connect } from "cloudflare:sockets";
-var listProxy = [
-  { "path": "/1", "proxy": "45.60.186.91" },
-  { "path": "/2", "proxy": "45.79.168.17" },
-  { "path": "/3", "proxy": "129.150.50.63" },
-  { "path": "/4", "proxy": "18.142.183.94" },
-  { "path": "/5", "proxy": "35.219.50.99" },
-  { "path": "/6", "proxy": "172.232.238.169" },
-  { "path": "/7", "proxy": "103.180.193.56" },
-  { "path": "/8", "proxy": "104.248.145.216" },
-  { "path": "/9", "proxy": "47.236.195.221" },
-  { "path": "/10", "proxy": "146.190.111.165" },
-  // Tambah proxy lain sesuai kebutuhan
+const listProxy = [
+    { path: '/vless=101.50.0.114=8443', proxy: '101.50.0.114:8443' },
+    { path: '/vless=172.232.252.101=587', proxy: '172.232.252.101:587' },
+    { path: '/vless=8.215.23.33=587', proxy: '35.219.50.99:587' },
+    { path: '/vless=129.150.50.63=443', proxy: '129.150.50.63:443' },
+    { path: '/vless=103.133.223.52=2096', proxy: '103.133.223.52:2096' },
+    { path: '/vless=165.154.48.233=587', proxy: '165.154.48.233:587' },
+    { path: '/vless=35.219.15.90=443', proxy: '35.219.15.90:443' },
+    { path: '/vless=43.218.79.114=2053', proxy: '43.218.79.114:2053' },
+    { path: '/vless=203.194.112.119=2053', proxy: '203.194.112.119:2053' },
+    { path: '/vless=47.236.7.98=587', proxy: '47.236.7.98:587' },
+    { path: '/vless=157.230.33.184=80', proxy: '157.230.33.184:80' },
+    // Add more entries as needed
 ];
-var apiCheck = "https://ipwho.is/json/?ip=";
-var proxyIP;
-var randomProxy;
-async function getActiveProxy() {
-  let selectedProxy;
-  do {
-    selectedProxy = listProxy[Math.floor(Math.random() * listProxy.length)].proxy;
-    const response = await fetch("https://ipwho.is/json/?ip=" + selectedProxy);
-    const data = await response.json();
-    if (data.proxyStatus === "ACTIVE") {
-      return selectedProxy;
-    }
-  } while (true);
-}
-async function updateRandomProxy() {
-  randomProxy = await getActiveProxy();
-}
-var worker_default = {
-  async fetch(request, ctx) {
-    try {
-      const url = new URL(request.url);
-      const upgradeHeader = request.headers.get("Upgrade");
-      if (url.pathname === "/") {
-        const allConfig = await getAllConfigVless(request.headers.get("Host"));
-        return new Response(allConfig, {
-          status: 200,
-          headers: { "Content-Type": "text/html;charset=utf-8" }
-        });
-      }
-      if (upgradeHeader === "websocket" && url.pathname === "/rotate") {
-        if (!randomProxy) {
-          randomProxy = await getActiveProxy();
-          setInterval(updateRandomProxy, 3e5);
-        }
-        proxyIP = randomProxy;
-        return await vlessOverWSHandler(request);
-      }
-      for (const entry of listProxy) {
-        if (url.pathname === entry.path) {
-          proxyIP = entry.proxy;
-          break;
-        }
-      }
-      if (upgradeHeader === "websocket" && proxyIP) {
-        return await vlessOverWSHandler(request);
-      }
-      if (url.pathname === "/allstatus") {
-        let results = {};
-        for (const entry of listProxy) {
-          const apiResponse = await fetch(apiCheck + entry.proxy);
-          const apiData = await apiResponse.json();
-          results[entry.path] = {
-            isp: apiData.isp || null,
-            country: apiData.country || null,
-            proxyStatus: apiData.proxyStatus || null
-          };
-        }
-        return new Response(JSON.stringify(results, null, 2), {
-          status: 200,
-          headers: { "Content-Type": "application/json;charset=utf-8" }
-        });
-      }
-      if (proxyIP) {
-        const apiResponse = await fetch(apiCheck + proxyIP);
-        const apiData = await apiResponse.json();
-        const result = {
-          isp: apiData.isp || null,
-          country: apiData.country || null,
-          proxyStatus: apiData.proxyStatus || null
-        };
-        return new Response(JSON.stringify(result, null, 2), {
-          status: 200,
-          headers: { "Content-Type": "application/json;charset=utf-8" }
-        });
-      }
-      return fetch(request);
-    } catch (err) {
-      return new Response(err.toString(), { status: 500 });
-    }
-  }
-};
-async function getAllConfigVless(hostName) {
-  try {
-    let vlessConfigs = "";
-    let clashConfigs = "";
-    for (const entry of listProxy) {
-      const { path, proxy } = entry;
-      const response = await fetch(`https://ipwhois.app/json/${proxy}`);
-      const data = await response.json();
-      const pathFixed = encodeURIComponent(path);
-      const vlessTls = `vless://Israel-Babi@${hostName}:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
-      const vlessXCL = `vless://Israel-Babi@ava.game.naver.com:443?encryption=none&security=tls&sni=ava.game.naver.com.${hostName}&fp=randomized&type=ws&host=ava.game.naver.com.${hostName}&path=${pathFixed}# Xcl ${data.isp}(${data.country_code})`;
-      const vlessByu = `vless://Israel-Babi@space.byu.id:443?encryption=none&security=tls&sni=${hostName}&fp=randomized&type=ws&host=${hostName}&path=${pathFixed}#${data.isp} (${data.country_code})`;
-      const vlessTlsFixed = vlessTls.replace(/ /g, "+");
-      const vlessXCLFixed = vlessXCL.replace(/ /g, "+");
-      const vlessByuFixed = vlessByu.replace(/ /g, "+");
-      const clashConfTls = `- name: ${data.isp} (${data.country_code})
-  server: ${hostName}
-  port: 443
-  type: vless
-  uuid: Israel-Babi
-  cipher: auto
-  tls: true
-  udp: true
-  skip-cert-verify: true
-  network: ws
-  servername: ${hostName}
-  ws-opts:
-    path: ${path}
-    headers:
-      Host: ${hostName}`;
-      const clashConfByu = `- name: ${data.isp} (${data.country_code})
-  server: space.byu.id
-  port: 443
-  type: vless
-  uuid: Israel-Babi
-  cipher: auto
-  tls: true
-  udp: true
-  skip-cert-verify: true
-  network: ws
-  servername: ${hostName}
-  ws-opts:
-    path: ${path}
-    headers:
-      Host: ${hostName}`;
-      clashConfigs += `<div style="display: none;">
-   <textarea id="clashTls${path}">${clashConfTls}</textarea>
- </div>
-<div style="display: none;">
-   <textarea id="clashByu${path}">${clashConfByu}</textarea>
- </div>
-<div class="config-section">
-    <p><strong>ISP:${data.isp} (${data.country_code})</strong> </p>
-    <p><strong>NEGARA :</strong> ${data.country}</p>
-    <hr />
-    <div class="config-toggle">
-        <button class="button" onclick="toggleConfig(this, 'show clash', 'hide clash')">Show Clash</button>
-        <div class="config-content">
-            <div class="config-block">
-                <h3>TLS:</h3>
-                <p class="config">${clashConfTls}</p>
-                <button class="button" onclick='copyClash("clashTls${path}")'><i class="fa fa-clipboard"></i>Copy</button>
-            </div>
-            <hr />
-            <div class="config-block">
-                <h3>Byu:</h3>
-                <p class="config">${clashConfByu}</p>
-                <button class="button" onclick='copyClash("clashByu${path}")'><i class="fa fa-clipboard"></i>Copy</button>
-            </div>
-        </div>
-    </div>
-</div>
-<hr class="config-divider" />
-`;
-      vlessConfigs += `<div class="config-section">
-    <p><strong>ISP : ${data.isp} (${data.country_code}) </strong> </p>
-    <p><strong>NEGARA :</strong> ${data.country}</p>
-    <hr />
-    <div class="config-toggle">
-        <button class="button" onclick="toggleConfig(this, 'show vless', 'hide vless')">Show Vless</button>
-        <div class="config-content">
-            <div class="config-block">
-                <h3>TLS:</h3>
-                <p class="config">${vlessTlsFixed}</p>
-                <button class="button" onclick='copyToClipboard("${vlessTlsFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
-            </div>
-            <hr />
-            <div class="config-block">
-                <h3>BYU:</h3>
-                <p class="config">${vlessByuFixed}</p>
-                <button class="button" onclick='copyToClipboard("${vlessByuFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
-            </div>
-            <hr />
-            <div class="config-block">
-                <h3>XCL:</h3>
-                <p class="config">${vlessXCLFixed}</p>
-                <button class="button" onclick='copyToClipboard("${vlessXCLFixed}")'><i class="fa fa-clipboard"></i>Copy</button>
-            </div>
-        </div>
-    </div>
-</div>
-<hr class="config-divider" />
-`;
-    }
-    const htmlConfigs = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>VPN | by-Embeng</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4C+6PCWJ+8zzHcXQjXGp6n5Yh9rX0x5fOdPaOqO+e2X4R5C1aE/BSqPIG+8y3O6APa8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="icon" href="https://raw.githubusercontent.com/AFRcloud/BG/main/icons8-film-noir-80.png" type="image/png">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            color: #355E3B;
-            background-color: black;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow: hidden;
-        }
+let proxyIP;
 
-        .container {
-            max-width: 1200px;
-            width: 90%;
-            margin: 3px;
-            background: rgba(237 ,232, 208, 1);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            animation: fadeIn 1s ease-in-out;
-            overflow-y: auto;
-            max-height: 97vh;
-        }
+export default {
+    async fetch(request) {
+        try {
+            const url = new URL(request.url);
+            const upgradeHeader = request.headers.get('Upgrade');
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 90%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: -1;
-        }
-        .profile-pic {
-    width: 300px;
-    height: 300px;
-    box-shadow: 0 0 15px rgba(58, 95, 65, 1);
-    margin: 0;
-		}
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            margin-top: 10px;
-        }
-
-        .header h1 {
-            font-size: 42px;
-            color: #EDE8D0;
-            margin: 0;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-
-        .nav-buttons .button {
-            background-color: transparent;
-            border: 3px solid #EDE8D0;
-            color: #EDE8D0;
-            padding: 6px 12px;
-            font-size: 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .nav-buttons .button:hover {
-            background-color: #EDE8D0;
-            color: #fff;
-            transform: scale(1.05);
-        }
-
-        .content {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        .content.active {
-            display: block;
-            opacity: 1;
-        }
-
-        .config-section {
-            background: rgba(200, 173, 127, 1);
-            padding: 20px;
-            margin-right: 5px;
-            margin-left: 5px;
-            border: 2px solid #EDE8D0;
-            border-radius: 10px;
-            position: relative;
-            animation: slideIn 0.5s ease-in-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-30px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .config-section h3 {
-            margin-top: 0;
-            color: #355E3B;
-            font-size: 28px;
-        }
-
-        .config-section p {
-            color: #f5f5f5;
-            font-size: 16px;
-        }
-
-        .config-toggle {
-            margin-bottom: 10px;
-        }
-
-        .config-content {
-            display: none;
-        }
-
-        .config-content.active {
-            display: block;
-        }
-
-        .config-block {
-            margin-bottom: 10px;
-            padding: 15px;
-            background-color: rgba(200, 173, 127, 1);
-            margin-right: 5px;
-            margin-left: 5px;
-            border-radius: 10px;
-            border: 2px solid #EDE8D0;
-            color: #f5f5f5;
-            transition: background-color 0.3s ease;
-        }
-
-        .config-block h4 {
-            margin-bottom: 8px;
-            color: #355E3B;
-            font-size: 22px;
-            font-weight: 600;
-        }
-
-        .config {
-            background-color: rgba(200, 173, 127, 1);
-            padding: 15px;
-            border-radius: 5px;
-            border: 2px solid #EDE8D0;
-            color: #2d3035;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 15px;
-        }
-        .button {
-            background-color: transparent;
-            border: 2px solid #EDE8D0;
-            color: #EDE8D0;
-            padding: 4px 8px;
-            font-size: 12px;
-            border-radius: 3px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-right: 4px;
-        }
-
-        .button i {
-            margin-right: 3px;
-        }
-
-        .button:hover {
-            background-color: #EDE8D0;
-            color: #fff;
-            transform: scale(1.0);
-        }
-
-        .config-divider {
-            border: none;
-            height: 1px;
-            background: linear-gradient(to right, transparent, #fff, transparent);
-            margin: 20px 0;
-        }
-        .watermark {
-            background-color: rgba(200, 173, 127, 1);
-            padding: 17px;
-            margin-right: 5px;
-            margin-left: 5px;
-            border-radius: 10px;
-            border: 2px solid #EDE8D0;
-            color: #f5f5f5;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 15px;
-        }
-        .watermark a {
-            color: #EDE8D0;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .watermark a:hover {
-            color: #EDE8D0;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 32px;
+            for (const entry of listProxy) {
+                if (url.pathname.startsWith(entry.path)) {
+                    proxyIP = entry.proxy;
+                    break;
+                }
             }
 
-            .config-section h3 {
-                font-size: 24px;
+            if (upgradeHeader === 'websocket' && proxyIP) {
+                return await vlessOverWSHandler(request);
             }
 
-            .config-block h4 {
-                font-size: 20px;
-            }
-
-            .domain-list {
-                font-size: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="overlay"></div>
-    <div class="container">
-        <div class="header">
-                    <div class="profile-container">
-				<img src="https://raw.githubusercontent.com/Embeng123/bbbb/refs/heads/main/Embee55_25-12-2023xzxb3o.png" alt="IsraeL Anjinggg" class="profile-pic">
-            <h2>FREE VPN VLESS 🇮🇩🇵🇸</h2>
-        </div>
-        <div class="config-section">
-        <div class="nav-buttons">
-            <button class="button" onclick="showContent('vless')">List vless</button>
-            <button class="button" onclick="showContent('clash')">List Clash</button>
-        </div>
-        <center><a href="https://excalidraw.com" class="button">Coret²</a> <a href="https://cdn.videy.co/DEdh6EAq1.mp4" class="button">Video</a></center><br>
-        </div><hr class="config-divider" />
-        <div class="config-section">
-        
-        <strong>Note: </strong><br>
-        \u2730 Utk wilcard bisa request!<br>
-        </div>
-        <hr class="config-divider" />
-        <div id="vless" class="content active">
-            ${vlessConfigs}
-        </div>
-        <div id="clash" class="content">
-            ${clashConfigs}
-        </div>
-           <div class="watermark">📞 <a href="https://t.me/freegazaok" target="_blank">Embeng</a></div>
-    </div>
-    <script>
-        function showContent(contentId) {
-            const contents = document.querySelectorAll('.content');
-            contents.forEach(content => {
-                content.classList.remove('active');
+            const allConfig = await getAllConfigVless(request.headers.get('vless.recycle.web.id'));
+            return new Response(allConfig, {
+                status: 200,
+                headers: { "Content-Type": "text/html;charset=utf-8" },
             });
-            document.getElementById(contentId).classList.add('active');
+        } catch (err) {
+            return new Response(err.toString(), { status: 500 });
         }
-        function salinTeks() {
-            var teks = document.getElementById('teksAsli');
-            teks.select();
-            document.execCommand('copy');
-            alert('Teks telah disalin.');
-        }
-        function copyClash(elementId) {
-            const text = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(text)
-            .then(() => {
-            const alertBox = document.createElement('div');
-            alertBox.textContent = "Copied to clipboard!";
-            alertBox.style.position = 'fixed';
-            alertBox.style.bottom = '20px';
-            alertBox.style.right = '20px';
-            alertBox.style.backgroundColor = '#EDE8D0';
-            alertBox.style.color = '#fff';
-            alertBox.style.padding = '10px 20px';
-            alertBox.style.borderRadius = '5px';
-            alertBox.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-            alertBox.style.opacity = '0';
-            alertBox.style.transition = 'opacity 0.5s ease-in-out';
-            document.body.appendChild(alertBox);
-            setTimeout(() => {
-                alertBox.style.opacity = '1';
-            }, 100);
-            setTimeout(() => {
-                alertBox.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(alertBox);
-                }, 500);
-            }, 2000);
-        })
-        .catch((err) => {
-            console.error("Failed to copy to clipboard:", err);
-        });
-        }
-function fetchAndDisplayAlert(path) {
-    fetch(path)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(\`HTTP error! Status: \${response.status}\`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const proxyStatus = data.proxyStatus || "Unknown status";
-            const alertBox = document.createElement('div');
-            alertBox.textContent = \`Proxy Status: \${proxyStatus}\`;
-            alertBox.style.position = 'fixed';
-            alertBox.style.bottom = '20px';
-            alertBox.style.right = '20px';
-            alertBox.style.backgroundColor = '#EDE8D0';
-            alertBox.style.color = '#fff';
-            alertBox.style.padding = '10px 20px';
-            alertBox.style.borderRadius = '5px';
-            alertBox.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-            alertBox.style.opacity = '0';
-            alertBox.style.transition = 'opacity 0.5s ease-in-out';
-            document.body.appendChild(alertBox);
-            
-            setTimeout(() => {
-                alertBox.style.opacity = '1';
-            }, 100);
-            
-            setTimeout(() => {
-                alertBox.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(alertBox);
-                }, 500);
-            }, 2000);
-        })
-        .catch((err) => {
-            alert("Failed to fetch data or invalid response.");
-        });
-}
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text)
-                .then(() => {
-                    const alertBox = document.createElement('div');
-                    alertBox.textContent = "Copied to clipboard!";
-                    alertBox.style.position = 'fixed';
-                    alertBox.style.bottom = '20px';
-                    alertBox.style.right = '20px';
-                    alertBox.style.backgroundColor = '#EDE8D0';
-                    alertBox.style.color = '#fff';
-                    alertBox.style.padding = '10px 20px';
-                    alertBox.style.borderRadius = '5px';
-                    alertBox.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                    alertBox.style.opacity = '0';
-                    alertBox.style.transition = 'opacity 0.5s ease-in-out';
-                    document.body.appendChild(alertBox);
-                    setTimeout(() => {
-                        alertBox.style.opacity = '1';
-                    }, 100);
-                    setTimeout(() => {
-                        alertBox.style.opacity = '0';
-                        setTimeout(() => {
-                            document.body.removeChild(alertBox);
-                        }, 500);
-                    }, 2000);
-                })
-                .catch((err) => {
-                    console.error("Failed to copy to clipboard:", err);
-                });
-        }
-
-        function toggleConfig(button, show, hide) {
-            const configContent = button.nextElementSibling;
-            if (configContent.classList.contains('active')) {
-                configContent.classList.remove('active');
-                button.textContent = show;
-            } else {
-                configContent.classList.add('active');
-                button.textContent = hide;
-            }
-        }
-    <\/script>
-</body>
-</html>`;
-    return htmlConfigs;
-  } catch (error) {
-    return `An error occurred while generating the VLESS configurations. ${error}`;
-  }
-}
-
-async function vlessOverWSHandler(request) {
-  const webSocketPair = new WebSocketPair();
-  const [client, webSocket] = Object.values(webSocketPair);
-  webSocket.accept();
-  let address = "";
-  let portWithRandomLog = "";
-  const log = (info, event) => {
-    console.log(`[${address}:${portWithRandomLog}] ${info}`, event || "");
-  };
-  const earlyDataHeader = request.headers.get("sec-websocket-protocol") || "";
-  const readableWebSocketStream = makeReadableWebSocketStream(webSocket, earlyDataHeader, log);
-  let remoteSocketWapper = {
-    value: null
-  };
-  let udpStreamWrite = null;
-  let isDns = false;
-  readableWebSocketStream.pipeTo(new WritableStream({
-    async write(chunk, controller) {
-      if (isDns && udpStreamWrite) {
-        return udpStreamWrite(chunk);
-      }
-      if (remoteSocketWapper.value) {
-        const writer = remoteSocketWapper.value.writable.getWriter();
-        await writer.write(chunk);
-        writer.releaseLock();
-        return;
-      }
-      const {
-        hasError,
-        message,
-        portRemote = 443,
-        addressRemote = "",
-        rawDataIndex,
-        vlessVersion = new Uint8Array([0, 0]),
-        isUDP
-      } = processVlessHeader(chunk);
-      address = addressRemote;
-      portWithRandomLog = `${portRemote}--${Math.random()} ${isUDP ? "udp " : "tcp "} `;
-      if (hasError) {
-        throw new Error(message);
-        return;
-      }
-      if (isUDP) {
-        if (portRemote === 53) {
-          isDns = true;
-        } else {
-          throw new Error("UDP proxy only enable for DNS which is port 53");
-          return;
-        }
-      }
-      const vlessResponseHeader = new Uint8Array([vlessVersion[0], 0]);
-      const rawClientData = chunk.slice(rawDataIndex);
-      if (isDns) {
-        const { write } = await handleUDPOutBound(webSocket, vlessResponseHeader, log);
-        udpStreamWrite = write;
-        udpStreamWrite(rawClientData);
-        return;
-      }
-      handleTCPOutBound(remoteSocketWapper, addressRemote, portRemote, rawClientData, webSocket, vlessResponseHeader, log);
     },
-    close() {
-      log(`readableWebSocketStream is close`);
-    },
-    abort(reason) {
-      log(`readableWebSocketStream is abort`, JSON.stringify(reason));
-    }
-  })).catch((err) => {
-    log("readableWebSocketStream pipeTo error", err);
-  });
-  return new Response(null, {
-    status: 101,
-    webSocket: client
-  });
-}
-async function handleTCPOutBound(remoteSocket, addressRemote, portRemote, rawClientData, webSocket, vlessResponseHeader, log) {
-  async function connectAndWrite(address, port) {
-    const tcpSocket2 = connect({
-      hostname: address,
-      port
-    });
-    remoteSocket.value = tcpSocket2;
-    log(`connected to ${address}:${port}`);
-    const writer = tcpSocket2.writable.getWriter();
-    await writer.write(rawClientData);
-    writer.releaseLock();
-    return tcpSocket2;
-  }
-  async function retry() {
-    const tcpSocket2 = await connectAndWrite(proxyIP || addressRemote, portRemote);
-    tcpSocket2.closed.catch((error) => {
-      console.log("retry tcpSocket closed error", error);
-    }).finally(() => {
-      safeCloseWebSocket(webSocket);
-    });
-    remoteSocketToWS(tcpSocket2, webSocket, vlessResponseHeader, null, log);
-  }
-  const tcpSocket = await connectAndWrite(addressRemote, portRemote);
-  remoteSocketToWS(tcpSocket, webSocket, vlessResponseHeader, retry, log);
-}
-function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
-  let readableStreamCancel = false;
-  const stream = new ReadableStream({
-    start(controller) {
-      webSocketServer.addEventListener("message", (event) => {
-        if (readableStreamCancel) {
-          return;
-        }
-        const message = event.data;
-        controller.enqueue(message);
-      });
-      webSocketServer.addEventListener(
-        "close",
-        () => {
-          safeCloseWebSocket(webSocketServer);
-          if (readableStreamCancel) {
-            return;
-          }
-          controller.close();
-        }
-      );
-      webSocketServer.addEventListener(
-        "error",
-        (err) => {
-          log("webSocketServer has error");
-          controller.error(err);
-        }
-      );
-      const { earlyData, error } = base64ToArrayBuffer(earlyDataHeader);
-      if (error) {
-        controller.error(error);
-      } else if (earlyData) {
-        controller.enqueue(earlyData);
-      }
-    },
-    pull(controller) {
-    },
-    cancel(reason) {
-      if (readableStreamCancel) {
-        return;
-      }
-      log(`ReadableStream was canceled, due to ${reason}`);
-      readableStreamCancel = true;
-      safeCloseWebSocket(webSocketServer);
-    }
-  });
-  return stream;
-}
-function processVlessHeader(vlessBuffer) {
-  if (vlessBuffer.byteLength < 24) {
-    return {
-      hasError: true,
-      message: "invalid data"
-    };
-  }
-  const version = new Uint8Array(vlessBuffer.slice(0, 1));
-  let isValidUser = true;
-  let isUDP = false;
-  if (!isValidUser) {
-    return {
-      hasError: true,
-      message: "invalid user"
-    };
-  }
-  const optLength = new Uint8Array(vlessBuffer.slice(17, 18))[0];
-  const command = new Uint8Array(
-    vlessBuffer.slice(18 + optLength, 18 + optLength + 1)
-  )[0];
-  if (command === 1) {
-  } else if (command === 2) {
-    isUDP = true;
-  } else {
-    return {
-      hasError: true,
-      message: `command ${command} is not support, command 01-tcp,02-udp,03-mux`
-    };
-  }
-  const portIndex = 18 + optLength + 1;
-  const portBuffer = vlessBuffer.slice(portIndex, portIndex + 2);
-  const portRemote = new DataView(portBuffer).getUint16(0);
-  let addressIndex = portIndex + 2;
-  const addressBuffer = new Uint8Array(
-    vlessBuffer.slice(addressIndex, addressIndex + 1)
-  );
-  const addressType = addressBuffer[0];
-  let addressLength = 0;
-  let addressValueIndex = addressIndex + 1;
-  let addressValue = "";
-  switch (addressType) {
-    case 1:
-      addressLength = 4;
-      addressValue = new Uint8Array(
-        vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength)
-      ).join(".");
-      break;
-    case 2:
-      addressLength = new Uint8Array(
-        vlessBuffer.slice(addressValueIndex, addressValueIndex + 1)
-      )[0];
-      addressValueIndex += 1;
-      addressValue = new TextDecoder().decode(
-        vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength)
-      );
-      break;
-    case 3:
-      addressLength = 16;
-      const dataView = new DataView(
-        vlessBuffer.slice(addressValueIndex, addressValueIndex + addressLength)
-      );
-      const ipv6 = [];
-      for (let i = 0; i < 8; i++) {
-        ipv6.push(dataView.getUint16(i * 2).toString(16));
-      }
-      addressValue = ipv6.join(":");
-      break;
-    default:
-      return {
-        hasError: true,
-        message: `invild  addressType is ${addressType}`
-      };
-  }
-  if (!addressValue) {
-    return {
-      hasError: true,
-      message: `addressValue is empty, addressType is ${addressType}`
-    };
-  }
-  return {
-    hasError: false,
-    addressRemote: addressValue,
-    addressType,
-    portRemote,
-    rawDataIndex: addressValueIndex + addressLength,
-    vlessVersion: version,
-    isUDP
-  };
-}
-async function remoteSocketToWS(remoteSocket, webSocket, vlessResponseHeader, retry, log) {
-  let remoteChunkCount = 0;
-  let chunks = [];
-  let vlessHeader = vlessResponseHeader;
-  let hasIncomingData = false;
-  await remoteSocket.readable.pipeTo(
-    new WritableStream({
-      start() {
-      },
-      async write(chunk, controller) {
-        hasIncomingData = true;
-        if (webSocket.readyState !== WS_READY_STATE_OPEN) {
-          controller.error(
-            "webSocket.readyState is not open, maybe close"
-          );
-        }
-        if (vlessHeader) {
-          webSocket.send(await new Blob([vlessHeader, chunk]).arrayBuffer());
-          vlessHeader = null;
-        } else {
-          webSocket.send(chunk);
-        }
-      },
-      close() {
-        log(`remoteConnection!.readable is close with hasIncomingData is ${hasIncomingData}`);
-      },
-      abort(reason) {
-        console.error(`remoteConnection!.readable abort`, reason);
-      }
-    })
-  ).catch((error) => {
-    console.error(
-      `remoteSocketToWS has exception `,
-      error.stack || error
-    );
-    safeCloseWebSocket(webSocket);
-  });
-  if (hasIncomingData === false && retry) {
-    log(`retry`);
-    retry();
-  }
-}
-function base64ToArrayBuffer(base64Str) {
-  if (!base64Str) {
-    return { error: null };
-  }
-  try {
-    base64Str = base64Str.replace(/-/g, "+").replace(/_/g, "/");
-    const decode = atob(base64Str);
-    const arryBuffer = Uint8Array.from(decode, (c) => c.charCodeAt(0));
-    return { earlyData: arryBuffer.buffer, error: null };
-  } catch (error) {
-    return { error };
-  }
-}
-var WS_READY_STATE_OPEN = 1;
-var WS_READY_STATE_CLOSING = 2;
-function safeCloseWebSocket(socket) {
-  try {
-    if (socket.readyState === WS_READY_STATE_OPEN || socket.readyState === WS_READY_STATE_CLOSING) {
-      socket.close();
-    }
-  } catch (error) {
-    console.error("safeCloseWebSocket error", error);
-  }
-}
-async function handleUDPOutBound(webSocket, vlessResponseHeader, log) {
-  let isVlessHeaderSent = false;
-  const transformStream = new TransformStream({
-    start(controller) {
-    },
-    transform(chunk, controller) {
-      for (let index = 0; index < chunk.byteLength; ) {
-        const lengthBuffer = chunk.slice(index, index + 2);
-        const udpPakcetLength = new DataView(lengthBuffer).getUint16(0);
-        const udpData = new Uint8Array(
-          chunk.slice(index + 2, index + 2 + udpPakcetLength)
-        );
-        index = index + 2 + udpPakcetLength;
-        controller.enqueue(udpData);
-      }
-    },
-    flush(controller) {
-    }
-  });
-  transformStream.readable.pipeTo(new WritableStream({
-    async write(chunk) {
-      const resp = await fetch(
-        "https://1.1.1.1/dns-query#GLOBAL",
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/dns-message"
-          },
-          body: chunk
-        }
-      );
-      const dnsQueryResult = await resp.arrayBuffer();
-      const udpSize = dnsQueryResult.byteLength;
-      const udpSizeBuffer = new Uint8Array([udpSize >> 8 & 255, udpSize & 255]);
-      if (webSocket.readyState === WS_READY_STATE_OPEN) {
-        log(`doh success and dns message length is ${udpSize}`);
-        if (isVlessHeaderSent) {
-          webSocket.send(await new Blob([udpSizeBuffer, dnsQueryResult]).arrayBuffer());
-        } else {
-          webSocket.send(await new Blob([vlessResponseHeader, udpSizeBuffer, dnsQueryResult]).arrayBuffer());
-          isVlessHeaderSent = true;
-        }
-      }
-    }
-  })).catch((error) => {
-    log("dns udp has error" + error);
-  });
-  const writer = transformStream.writable.getWriter();
-  return {
-    write(chunk) {
-      writer.write(chunk);
-    }
-  };
-}
-export {
-  worker_default as default
 };
-//# sourceMappingURL=worker.js.map
+
+async function getAllConfigVless(hostName) {
+    const configs = await Promise.all(
+        listProxy.map(entry => getVLESSConfig(entry.path, hostName, entry.proxy))
+    );
+    return generateHTML(configs);
+}
+
+async function getVLESSConfig(path, hostName, proxyIP) {
+    try {
+        const response = await fetch(`https://ipwhois.app/json/${proxyIP}`);
+        const data = await response.json();
+        const isp = data.isp;
+        const country = data.country;
+        const city = data.city;
+        const pathFixed = encodeURIComponent(path);
+
+        const vlessTls = `vless://Palestine@vless.recycle.web.id:443?encryption=none&security=tls&sni=vless.recycle.web.id&fp=randomized&type=ws&host=vless.recycle.web.id&path=${pathFixed}#${isp}`;
+        const vlessNtls = `vless://Palestine@vless.recycle.web.id:80?path=${pathFixed}&security=none&encryption=none&host=vless.recycle.web.id&fp=randomized&type=ws&sni=vless.recycle.web.id#${isp}`;
+        const vlessTlsFixed = vlessTls.replace(/ /g, '+');
+        const vlessNtlsFixed = vlessNtls.replace(/ /g, '+');
+
+        return {
+            proxyIP,
+            isp,
+            country,
+            city,
+            path,
+            vlessTls,
+            vlessNtls,
+            vlessTlsFixed,
+            vlessNtlsFixed
+        };
+    } catch (error) {
+        return { error: "Terjadi kesalahan saat membuat konfigurasi VLESS." };
+    }
+}function generateHTML(configs) {
+    const rows = configs.map(config => `
+        <tr>
+            <td>${config.proxyIP}</td>
+            <td>${config.country}</td>
+            <td>${config.isp}</td>
+            <td>
+                <button class="button2" onclick='copyToClipboard("${config.vlessTlsFixed}")'>Copy TLS</button>
+                <button class="button2" onclick='copyToClipboard("${config.vlessNtlsFixed}")'>Copy NTLS</button>
+            </td>
+        </tr>
+    `).join('');
+
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>VPN Vless | Embeng 🇮🇩🇵🇸</title>
+        <link rel="icon" href="https://www.svgrepo.com/download/375724/vpn-alt.svg" type="image/svg+xml">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <style>
+            .form-control::placeholder {
+                color: #999;
+                font-style: italic;
+            }
+            table.dataTable {
+                background-color: #343a40;
+                border: 1px solid #6c757d;
+                color: white;
+                border-collapse: collapse;
+            }
+            .table-dark tr,
+            .table-dark td {
+                color: white;
+                vertical-align: middle;
+            }
+            table.dataTable thead {
+                background-color: #495057;
+                color: white;
+            }
+            table.dataTable thead th {
+                text-align: center;
+                border: 1px solid #6c757d;
+            }
+            table.dataTable tbody td {
+                text-align: center;
+                border: 1px solid #50575e;
+            }
+            table.dataTable tbody tr {
+                border: 1px solid #50575e;
+            }
+            table.dataTable tbody tr:hover {
+                background-color: #50575e;
+            }
+            .dataTables_wrapper .dataTables_filter label,
+            .dataTables_wrapper .dataTables_length label,
+            .dataTables_wrapper .dataTables_info,
+            .dataTables_wrapper .dataTables_paginate {
+                color: white;
+            }
+            .dataTables_wrapper .dataTables_filter input,
+            .dataTables_wrapper .dataTables_length select {
+                color: white;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+                color: white;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+                background-color: #50575e;
+                color: white;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+                background-color: #50575e;
+                color: white;
+                border: 1px solid #6c757d;
+            }
+            .dataTables_wrapper .dataTables_info,
+            .dataTables_wrapper .dataTables_paginate {
+                color: white;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body class="bg-dark text-white">
+        <div class="container mt-4">
+            <div class="text-center mt-4">
+                <h1 class="text-center">Free VPN Vless</h1>
+            </div>
+            <div class="card bg-secondary text-white">
+                <div class="card-body">
+                    <h3 class="text-center"><i class="fas fa-network-wired"></i> Add Proxy</h3>
+                    <form method="POST" action="#">
+                        <div class="mb-3">
+                            <label for="proxy" class="form-label"><i class="fas fa-server"></i> Proxy <small class="text-warning" style="font-style: italic;">(Max 10 lines)</small></label>
+                            <textarea rows="5" cols="10" class="form-control" id="proxy" name="proxy" placeholder="wildcard : ava.game.naver.com, quiz.vidio.com, graph.instagram.com, investors.spotify.com, io.ruangguru.com, zaintest.vuclip.com, support.zoom.us, cache.netflix.com dll.."></textarea>
+                            <div class="alert alert-danger alert-dismissible fade show mt-2" id="lineWarning" style="display: none;">
+                                You can only enter a maximum of 10 lines.
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save"></i> Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card bg-secondary text-white mt-4">
+                <div class="card-body">
+                    <h3 class="text-center"><i class="fas fa-database"></i> Proxy Database</h3>
+                    <div class="table-responsive">
+                        <table id="proxyTable" class="table table-bordered table-striped text-white bg-dark table-dark mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Proxy</th>
+                                    <th>Country</th>
+                                    <th>ISP</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-dark text-white text-center mt-4">
+                <p>&copy; 2024 Free Vless | by~ Embeng.</p>
+            </footer>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#proxyTable').DataTable();
+            });
+
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        alert("Copied to clipboard");
+                    })
+                    .catch((err) => {
+                        console.error("Failed to copy to clipboard:", err);
+                    });
+            }
+        </script>
+    </body>
+    </html>`;
+}// Placeholder function for WebSocket handling
+async function vlessOverWSHandler(request) {
+    return new Response("WebSocket handling not implemented.", { status: 501 });
+		}
